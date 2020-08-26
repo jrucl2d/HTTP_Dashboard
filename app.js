@@ -27,6 +27,25 @@ const server = http
             res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
             res.end("good");
           });
+        } else if (req.url === "/register") {
+          let body = "";
+          req.on("data", (data) => (body += data));
+          req.on("end", async () => {
+            const { id, password } = JSON.parse(body);
+            // console.log(`${id} ${password} 회원가입`);
+            const usersData = await fs.readFile("./database/user.json");
+            const users = JSON.parse(usersData);
+            for (key in users) {
+              if (users[key].id === id && users[key].password === password) {
+                res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+                return res.end("exist");
+              }
+            }
+            users[Date.now()] = { id, password };
+            await fs.writeFile("./database/user.json", JSON.stringify(users));
+            res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+            res.end("good");
+          });
         }
       }
     } catch (err) {
