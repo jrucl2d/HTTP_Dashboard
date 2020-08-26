@@ -2,6 +2,7 @@ const loginForm = document.querySelector("#loginForm");
 const registerForm = document.querySelector("#registerForm");
 const registerBtn = document.querySelector("#register");
 const loginBtn = document.querySelector("#login");
+const logoutBtn = document.querySelector("#logout");
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -19,6 +20,8 @@ loginForm.addEventListener("submit", async (e) => {
     alert("없는 계정입니다. 회원가입을 해주세요");
     return;
   }
+  loginForm.className = "hide";
+  logoutBtn.className = "show";
   const result = await axios.get("/dashboard"); // 여기서 대시보드 정보 받아서 표현해줘야 함
 });
 registerForm.addEventListener("submit", async (e) => {
@@ -50,4 +53,9 @@ loginBtn.addEventListener("click", (e) => {
   e.preventDefault();
   loginForm.className = "show";
   registerForm.className = "hide";
+});
+logoutBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  logoutBtn.className = "hide";
+  loginForm.className = "show";
 });
