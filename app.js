@@ -2,6 +2,8 @@ const http = require("http");
 const fs = require("fs").promises;
 const PORT = process.env.PORT || 8000;
 
+const session = {};
+
 http
   .createServer(async (req, res) => {
     try {
@@ -11,8 +13,22 @@ http
             const data = await fs.readFile("./public/index.html");
             res.end(data);
           } else if (req.url === "/dashboard") {
-            console.log("왔냐");
-            // 여기서 대시보드 정보 전해줘야 함(이름, 글, 주인이면 수정/삭제)
+            const cookie = req.headers.cookie.split("=")[1];
+            if (cookie && session[cookie]) {
+              // 로그인 상태
+            }
+            res.end();
+          } else if (req.url === "/logout") {
+            const cookie = req.headers.cookie.split("=")[1];
+            delete session[cookie];
+            res.writeHead(302, {
+              // redirect
+              Location: "/",
+              "Content-Type": "text/plain; charset=utf-8",
+              "Set-Cookie": `session=`, // 쿠키 삭제
+            });
+
+            res.end();
           } else {
             // 정적 파일 제공
             const data = await fs.readFile(`./public${req.url}`);
@@ -29,7 +45,9 @@ http
               const usersData = await fs.readFile("./database/user.json");
               const users = JSON.parse(usersData);
               if (findUser(users, id, password)) {
-                res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+                const randomInt = Date.now();
+                session[randomInt] = id;
+                res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8", "Set-Cookie": `session=${randomInt}; HttpOnly; Path=/` });
                 return res.end("good");
               }
               res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
