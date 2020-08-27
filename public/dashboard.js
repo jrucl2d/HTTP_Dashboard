@@ -46,15 +46,38 @@ async function getInfo() {
     const nameElem = document.createElement("span");
     nameElem.className = "name";
     nameElem.textContent = words[key].id;
-
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "수정";
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "삭제";
-    const wordsElem = document.createElement("div");
+    oneElem.appendChild(nameElem);
+    if (words[key].id === theUser) {
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "수정";
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "삭제";
+      oneElem.append(editBtn, delBtn);
+      editBtn.addEventListener("click", async () => {
+        // const data = words.value;
+        // if (!data) {
+        //   alert("글을 입력하세요");
+        //   return;
+        // }
+        // words.value = "";
+        // try {
+        //   const sendingData = {};
+        //   sendingData["id"] = theUser;
+        //   sendingData["words"] = data;
+        //   await axios.post("/words", sendingData);
+        //   getInfo();
+        // } catch (err) {
+        //   console.error(err);
+        //   return;
+        // }
+      });
+      delBtn.addEventListener("click", async () => {});
+    }
+    const wordsElem = document.createElement("textArea");
     wordsElem.textContent = words[key].words;
     wordsElem.className = "words";
-    oneElem.append(nameElem, editBtn, delBtn, wordsElem);
+    wordsElem.readOnly = "true";
+    oneElem.appendChild(wordsElem);
     dashboard.appendChild(oneElem);
   }
 }

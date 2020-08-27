@@ -2,25 +2,23 @@
   display: inline-block;
   position: relative;
   width: 500px;
-  height: 150px;
-  border: 1px solid black;
+  height: 120px;
+  margin-bottom: 5px;
 }
 .name {
   border: 1px solid black;
-  border-left: none;
+
   padding: 4px;
   padding-top: 0;
 }
-.oneElem button {
-  position: relative;
-  top: 2px;
-}
-.words {
-  height: 117px;
-  margin-top: 10px;
-  margin-left: 5px;
-}
 
+.words {
+  display: block;
+  height: 88px;
+  width: 500px;
+  margin-top: 3x;
+  resize: none;
+}
 .hide {
   display: none;
 }
