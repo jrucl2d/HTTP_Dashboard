@@ -1,9 +1,9 @@
 const http = require("http");
-const { send } = require("process");
 const fs = require("fs").promises;
 const PORT = process.env.PORT || 8000;
 
 let session = {};
+let dashboard = {};
 
 http
   .createServer(async (req, res) => {
@@ -66,8 +66,9 @@ http
             try {
               const data = await fs.readFile("./database/dashboard.json");
               const words = JSON.parse(data);
-              const id = session[beforeCookie.split("=")[1]];
-              const sendingData = { id, words };
+              dashboard = words;
+              const user = session[beforeCookie.split("=")[1]];
+              const sendingData = { user, words };
               res.end(JSON.stringify(sendingData));
             } catch (err) {
               throw err;
@@ -114,6 +115,20 @@ http
               await fs.writeFile("./database/user.json", JSON.stringify(users));
               res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
               res.end("good");
+            });
+          } else if (req.url === "/words") {
+            let body = "";
+            req.on("data", (data) => (body += data));
+            return req.on("end", async () => {
+              const wordId = Date.now();
+              dashboard[wordId] = JSON.parse(body);
+              try {
+                await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+              } catch (err) {
+                throw err;
+              }
+              res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+              res.end("ok");
             });
           }
           break;

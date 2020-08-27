@@ -14,9 +14,17 @@ logoutBtn.addEventListener("click", async (e) => {
 submitForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = words.value;
+  if (!data) {
+    alert("글을 입력하세요");
+    return;
+  }
   words.value = "";
   try {
-    await axios.post("/words");
+    const sendingData = {};
+    sendingData["id"] = theUser;
+    sendingData["words"] = data;
+    await axios.post("/words", sendingData);
+    getInfo();
   } catch (err) {
     console.error(err);
     return;
@@ -27,7 +35,8 @@ window.onload = getInfo();
 
 async function getInfo() {
   const result = await axios.get("/info");
-  const { id, words } = result.data;
-  theUser = id;
-  document.querySelector("#user").textContent = `로그인된 사용자 : ${id}`;
+  const { user, words } = result.data;
+  theUser = user;
+  console.log(words);
+  document.querySelector("#user").textContent = `로그인된 사용자 : ${user}`;
 }
