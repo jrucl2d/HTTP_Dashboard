@@ -2,17 +2,20 @@ const http = require("http");
 const fs = require("fs").promises;
 const PORT = process.env.PORT || 8000;
 
-const session = {};
+let session = {};
 
 http
   .createServer(async (req, res) => {
     try {
+      const tmpSession = await fs.readFile("./database/session.json");
+      session = JSON.parse(tmpSession);
       switch (req.method) {
         case "GET":
           const beforeCookie = req.headers.cookie;
           if (req.url === "/") {
             if (beforeCookie) {
               const cookie = beforeCookie.split("=")[1];
+              console.log(cookie);
               if (session[cookie]) {
                 res.writeHead(302, {
                   // redirect
@@ -47,6 +50,8 @@ http
           } else if (req.url === "/logout") {
             const cookie = req.headers.cookie.split("=")[1];
             delete session[cookie];
+            session = {};
+            await fs.writeFile("./database/session.json", JSON.stringify(session));
             const tmpDate = new Date();
             tmpDate.setDate(tmpDate.getDate() - 1);
 
@@ -75,6 +80,7 @@ http
               if (findUser(users, id, password)) {
                 const randomInt = Date.now();
                 session[randomInt] = id;
+                await fs.writeFile("./database/session.json", JSON.stringify(session));
                 res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8", "Set-Cookie": `session=${randomInt}; HttpOnly; Path=/` });
                 return res.end("good");
               }

@@ -6,3 +6,7 @@ logoutBtn.addEventListener("click", async (e) => {
   alert("안녕하 가세요");
   location.reload(true);
 });
+
+window.onload = getInfo();
+
+function getInfo() {}
