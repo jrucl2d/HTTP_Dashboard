@@ -2,9 +2,6 @@ const loginForm = document.querySelector("#loginForm");
 const registerForm = document.querySelector("#registerForm");
 const registerBtn = document.querySelector("#register");
 const loginBtn = document.querySelector("#login");
-const logoutBtn = document.querySelector("#logout");
-
-let loginnedID = "";
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -22,10 +19,10 @@ loginForm.addEventListener("submit", async (e) => {
     alert("없는 계정입니다. 회원가입을 해주세요");
     return;
   }
-  loginForm.className = "hide";
-  logoutBtn.className = "show";
-  loginnedID = id;
-  await axios.get("/");
+  alert(`${id}님 환영합니다`);
+  await axios.get("/dashboard");
+  document.body.innerHTML = "";
+  location.reload(true);
 });
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -57,10 +54,10 @@ loginBtn.addEventListener("click", (e) => {
   loginForm.className = "show";
   registerForm.className = "hide";
 });
-logoutBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-  await axios.get("/logout");
-  alert(`안녕히 가세요 ${loginnedID}님`);
-  logoutBtn.className = "hide";
-  loginForm.className = "show";
-});
+// logoutBtn.addEventListener("click", async (e) => {
+//   e.preventDefault();
+//   await axios.get("/logout");
+//   alert(`안녕히 가세요 ${loginnedID}님`);
+//   logoutBtn.className = "hide";
+//   loginForm.className = "show";
+// });

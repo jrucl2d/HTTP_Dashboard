@@ -10,12 +10,32 @@ http
       switch (req.method) {
         case "GET":
           if (req.url === "/") {
-            const cookie = req.headers.cookie.split("=")[1];
-            if (cookie && session[cookie]) {
-              console.log("zz");
+            const beforeCookie = req.headers.cookie;
+            if (beforeCookie) {
+              const cookie = beforeCookie.split("=")[1];
+              if (session[cookie]) {
+                res.writeHead(302, {
+                  // redirect
+                  Location: "/dashboard",
+                  "Content-Type": "text/plain; charset=utf-8",
+                  "Set-Cookie": `session=${cookie}`,
+                });
+                return res.end();
+              }
             }
-            const data = await fs.readFile("./public/index.html");
-            res.end(data);
+            try {
+              const data = await fs.readFile("./public/index.html");
+              res.end(data);
+            } catch (err) {
+              throw err;
+            }
+          } else if (req.url === "/dashboard") {
+            try {
+              const data = await fs.readFile("./public/dashboard.html");
+              res.end(data);
+            } catch (err) {
+              throw err;
+            }
           } else if (req.url === "/logout") {
             const cookie = req.headers.cookie.split("=")[1];
             delete session[cookie];
@@ -25,7 +45,6 @@ http
               "Content-Type": "text/plain; charset=utf-8",
               "Set-Cookie": `session=`, // 쿠키 삭제
             });
-
             res.end();
           } else {
             // 정적 파일 제공
