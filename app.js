@@ -135,7 +135,6 @@ http
         case "PUT":
           if (req.url.startsWith("/words/")) {
             const key = req.url.split("/")[2];
-            console.log(key);
             let body = "";
             req.on("data", (data) => (body += data));
             return req.on("end", async () => {
@@ -152,10 +151,20 @@ http
           }
           break;
         case "DELETE":
+          if (req.url.startsWith("/words/")) {
+            const key = req.url.split("/")[2];
+            delete dashboard[key];
+            try {
+              await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+            } catch (err) {
+              throw err;
+            }
+            res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+            res.end("ok");
+          }
           break;
       }
     } catch (err) {
-      console.error(err);
       res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
       res.end(err.message);
     }
