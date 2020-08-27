@@ -25,7 +25,7 @@ loginForm.addEventListener("submit", async (e) => {
   loginForm.className = "hide";
   logoutBtn.className = "show";
   loginnedID = id;
-  const result = await axios.get("/dashboard"); // 여기서 대시보드 정보 받아서 표현해줘야 함
+  await axios.get("/");
 });
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();

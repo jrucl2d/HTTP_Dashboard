@@ -10,14 +10,12 @@ http
       switch (req.method) {
         case "GET":
           if (req.url === "/") {
-            const data = await fs.readFile("./public/index.html");
-            res.end(data);
-          } else if (req.url === "/dashboard") {
             const cookie = req.headers.cookie.split("=")[1];
             if (cookie && session[cookie]) {
-              // 로그인 상태
+              console.log("zz");
             }
-            res.end();
+            const data = await fs.readFile("./public/index.html");
+            res.end(data);
           } else if (req.url === "/logout") {
             const cookie = req.headers.cookie.split("=")[1];
             delete session[cookie];
