@@ -37,6 +37,24 @@ async function getInfo() {
   const result = await axios.get("/info");
   const { user, words } = result.data;
   theUser = user;
-  console.log(words);
   document.querySelector("#user").textContent = `로그인된 사용자 : ${user}`;
+  dashboard.innerHTML = "";
+  for (key in words) {
+    console.log(words[key]);
+    const oneElem = document.createElement("div");
+    oneElem.className = "oneElem";
+    const nameElem = document.createElement("span");
+    nameElem.className = "name";
+    nameElem.textContent = words[key].id;
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "수정";
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "삭제";
+    const wordsElem = document.createElement("div");
+    wordsElem.textContent = words[key].words;
+    wordsElem.className = "words";
+    oneElem.append(nameElem, editBtn, delBtn, wordsElem);
+    dashboard.appendChild(oneElem);
+  }
 }
