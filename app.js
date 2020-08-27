@@ -1,4 +1,5 @@
 const http = require("http");
+const { send } = require("process");
 const fs = require("fs").promises;
 const PORT = process.env.PORT || 8000;
 
@@ -15,7 +16,6 @@ http
           if (req.url === "/") {
             if (beforeCookie) {
               const cookie = beforeCookie.split("=")[1];
-              console.log(cookie);
               if (session[cookie]) {
                 res.writeHead(302, {
                   // redirect
@@ -62,6 +62,16 @@ http
               "Set-Cookie": `session= ; Expires=${tmpDate.toString()}`,
             });
             res.end();
+          } else if (req.url === "/info") {
+            try {
+              const data = await fs.readFile("./database/dashboard.json");
+              const words = JSON.parse(data);
+              const id = session[beforeCookie.split("=")[1]];
+              const sendingData = { id, words };
+              res.end(JSON.stringify(sendingData));
+            } catch (err) {
+              throw err;
+            }
           } else {
             // 정적 파일 제공
             const data = await fs.readFile(`./public${req.url}`);
