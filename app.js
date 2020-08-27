@@ -9,8 +9,8 @@ http
     try {
       switch (req.method) {
         case "GET":
+          const beforeCookie = req.headers.cookie;
           if (req.url === "/") {
-            const beforeCookie = req.headers.cookie;
             if (beforeCookie) {
               const cookie = beforeCookie.split("=")[1];
               if (session[cookie]) {
@@ -30,6 +30,14 @@ http
               throw err;
             }
           } else if (req.url === "/dashboard") {
+            if (!beforeCookie) {
+              res.writeHead(302, {
+                // redirect
+                Location: "/",
+                "Content-Type": "text/plain; charset=utf-8",
+              });
+              return res.end();
+            }
             try {
               const data = await fs.readFile("./public/dashboard.html");
               res.end(data);
@@ -39,11 +47,14 @@ http
           } else if (req.url === "/logout") {
             const cookie = req.headers.cookie.split("=")[1];
             delete session[cookie];
+            const tmpDate = new Date();
+            tmpDate.setDate(tmpDate.getDate() - 1);
+
             res.writeHead(302, {
               // redirect
               Location: "/",
               "Content-Type": "text/plain; charset=utf-8",
-              "Set-Cookie": `session=`, // 쿠키 삭제
+              "Set-Cookie": `session= ; Expires=${tmpDate.toString()}`,
             });
             res.end();
           } else {

@@ -54,10 +54,3 @@ loginBtn.addEventListener("click", (e) => {
   loginForm.className = "show";
   registerForm.className = "hide";
 });
-// logoutBtn.addEventListener("click", async (e) => {
-//   e.preventDefault();
-//   await axios.get("/logout");
-//   alert(`안녕히 가세요 ${loginnedID}님`);
-//   logoutBtn.className = "hide";
-//   loginForm.className = "show";
-// });
