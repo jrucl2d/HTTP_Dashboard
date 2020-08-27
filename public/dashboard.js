@@ -65,10 +65,9 @@ async function getInfo() {
         }
         try {
           const sendingData = {};
-          sendingData["key"] = key;
           sendingData["id"] = theUser;
           sendingData["words"] = data;
-          await axios.put("/words", sendingData);
+          await axios.put(`/words/${key}`, sendingData);
           getInfo();
         } catch (err) {
           console.error(err);

@@ -133,11 +133,13 @@ http
           }
           break;
         case "PUT":
-          if (req.url === "/words") {
+          if (req.url.startsWith("/words/")) {
+            const key = req.url.split("/")[2];
+            console.log(key);
             let body = "";
             req.on("data", (data) => (body += data));
             return req.on("end", async () => {
-              const { key, id, words } = JSON.parse(body);
+              const { id, words } = JSON.parse(body);
               dashboard[key].words = words;
               try {
                 await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
