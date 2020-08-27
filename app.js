@@ -133,6 +133,21 @@ http
           }
           break;
         case "PUT":
+          if (req.url === "/words") {
+            let body = "";
+            req.on("data", (data) => (body += data));
+            return req.on("end", async () => {
+              const { key, id, words } = JSON.parse(body);
+              dashboard[key].words = words;
+              try {
+                await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+              } catch (err) {
+                throw err;
+              }
+              res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+              res.end("ok");
+            });
+          }
           break;
         case "DELETE":
           break;

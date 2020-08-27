@@ -39,7 +39,7 @@ async function getInfo() {
   theUser = user;
   document.querySelector("#user").textContent = `로그인된 사용자 : ${user}`;
   dashboard.innerHTML = "";
-  for (key in words) {
+  for (let key in words) {
     console.log(words[key]);
     const oneElem = document.createElement("div");
     oneElem.className = "oneElem";
@@ -47,6 +47,10 @@ async function getInfo() {
     nameElem.className = "name";
     nameElem.textContent = words[key].id;
     oneElem.appendChild(nameElem);
+    const wordsElem = document.createElement("textArea");
+    wordsElem.textContent = words[key].words;
+    wordsElem.className = "words";
+    wordsElem.readOnly = true;
     if (words[key].id === theUser) {
       const editBtn = document.createElement("button");
       editBtn.textContent = "수정";
@@ -54,29 +58,25 @@ async function getInfo() {
       delBtn.textContent = "삭제";
       oneElem.append(editBtn, delBtn);
       editBtn.addEventListener("click", async () => {
-        // const data = words.value;
-        // if (!data) {
-        //   alert("글을 입력하세요");
-        //   return;
-        // }
-        // words.value = "";
-        // try {
-        //   const sendingData = {};
-        //   sendingData["id"] = theUser;
-        //   sendingData["words"] = data;
-        //   await axios.post("/words", sendingData);
-        //   getInfo();
-        // } catch (err) {
-        //   console.error(err);
-        //   return;
-        // }
+        const data = prompt("새로운 글을 입력하세요");
+        if (!data) {
+          alert("글을 입력하세요");
+          return;
+        }
+        try {
+          const sendingData = {};
+          sendingData["key"] = key;
+          sendingData["id"] = theUser;
+          sendingData["words"] = data;
+          await axios.put("/words", sendingData);
+          getInfo();
+        } catch (err) {
+          console.error(err);
+          return;
+        }
       });
       delBtn.addEventListener("click", async () => {});
     }
-    const wordsElem = document.createElement("textArea");
-    wordsElem.textContent = words[key].words;
-    wordsElem.className = "words";
-    wordsElem.readOnly = "true";
     oneElem.appendChild(wordsElem);
     dashboard.appendChild(oneElem);
   }
