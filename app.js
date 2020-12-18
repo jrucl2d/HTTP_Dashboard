@@ -51,7 +51,10 @@ http
             const cookie = req.headers.cookie.split("=")[1];
             delete session[cookie];
             session = {};
-            await fs.writeFile("./database/session.json", JSON.stringify(session));
+            await fs.writeFile(
+              "./database/session.json",
+              JSON.stringify(session)
+            );
             const tmpDate = new Date();
             tmpDate.setDate(tmpDate.getDate() - 1);
 
@@ -91,11 +94,19 @@ http
               if (findUser(users, id, password)) {
                 const randomInt = Date.now();
                 session[randomInt] = id;
-                await fs.writeFile("./database/session.json", JSON.stringify(session));
-                res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8", "Set-Cookie": `session=${randomInt}; HttpOnly; Path=/` });
+                await fs.writeFile(
+                  "./database/session.json",
+                  JSON.stringify(session)
+                );
+                res.writeHead(200, {
+                  "Content-Type": "text/plain; charset=utf-8",
+                  "Set-Cookie": `session=${randomInt}; HttpOnly; Path=/`,
+                });
                 return res.end("good");
               }
-              res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+              res.writeHead(200, {
+                "Content-Type": "text/plain; charset=utf-8",
+              });
               res.end("no");
             });
           } else if (req.url === "/register") {
@@ -108,12 +119,16 @@ http
               const users = JSON.parse(usersData);
               // 이미 존재하는 계정
               if (findUser(users, id, password)) {
-                res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+                res.writeHead(200, {
+                  "Content-Type": "text/plain; charset=utf-8",
+                });
                 return res.end("exist");
               }
               users[Date.now()] = { id, password };
               await fs.writeFile("./database/user.json", JSON.stringify(users));
-              res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+              res.writeHead(200, {
+                "Content-Type": "text/plain; charset=utf-8",
+              });
               res.end("good");
             });
           } else if (req.url === "/words") {
@@ -123,11 +138,16 @@ http
               const wordId = Date.now();
               dashboard[wordId] = JSON.parse(body);
               try {
-                await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+                await fs.writeFile(
+                  "./database/dashboard.json",
+                  JSON.stringify(dashboard)
+                );
               } catch (err) {
                 throw err;
               }
-              res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+              res.writeHead(201, {
+                "Content-Type": "text/plain; charset=utf-8",
+              });
               res.end("ok");
             });
           }
@@ -141,11 +161,16 @@ http
               const { id, words } = JSON.parse(body);
               dashboard[key].words = words;
               try {
-                await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+                await fs.writeFile(
+                  "./database/dashboard.json",
+                  JSON.stringify(dashboard)
+                );
               } catch (err) {
                 throw err;
               }
-              res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+              res.writeHead(201, {
+                "Content-Type": "text/plain; charset=utf-8",
+              });
               res.end("ok");
             });
           }
@@ -155,7 +180,10 @@ http
             const key = req.url.split("/")[2];
             delete dashboard[key];
             try {
-              await fs.writeFile("./database/dashboard.json", JSON.stringify(dashboard));
+              await fs.writeFile(
+                "./database/dashboard.json",
+                JSON.stringify(dashboard)
+              );
             } catch (err) {
               throw err;
             }
